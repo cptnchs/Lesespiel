@@ -33,8 +33,8 @@
     }
     
     .target-word { 
-      font-size: 3.5rem; font-weight: 900; color: #2b6cb0; margin: 15px 0; 
-      text-transform: uppercase; letter-spacing: 5px; word-break: break-word; 
+      font-size: 2.2rem; font-weight: 900; color: #2b6cb0; margin: 15px 0; 
+      text-transform: uppercase; letter-spacing: 3px; word-break: break-word; 
     }
     
     .heard-preview { font-size: 1.1rem; color: #4a5568; min-height: 28px; margin-top: 10px; font-weight: 600; }
@@ -67,7 +67,7 @@
   <button class="big-mic-btn" id="actionBtn">🎙️ SPRECHEN</button>
 
   <script>
-    const pokemonList = ["Bisaknosp", "Bisaknosp", "Bisasam", "Bisasam", "Blätter", "Blätter", "Blubella", "Blubella", "Bubelle", "Bubelle", "Ditto", "Ditto", "Dragoran", "Dragoran", "Echnatoll", "Echnatoll", "Entoron", "Entoron", "Evoli", "Evoli", "Exeggcutok", "Exeggcutok", "Exeggutor", "Exeggutor", "Fearow", "Fearow", "Fiaro", "Fiaro", "Flamara", "Flamara", "Flemmli", "Flemmli", "Floette", "Floette", "Flotsam", "Flotsam", "Fritzlak", "Fritzlak", "Fukano", "Fukano", "Fummeluff", "Fummeluff", "Galadriel", "Galadriel", "Garbodor", "Garbodor", "Garados", "Garados", "Gengar", "Gengar", "Glurak", "Glurak", "Glutexo", "Glutexo", "Glumanda", "Glumanda", "Golbat", "Golbat", "Goldini", "Goldini", "Golking", "Golking", "Gowou", "Gowou", "Graveler", "Graveler", "Grimer", "Grimer", "Groink", "Groink", "Großlil", "Großlil", "Guardevoir", "Guardevoir", "Gulpinchen", "Gulpinchen", "Habitak", "Habitak", "Hapakupefa", "Hapakupefa", "Haunter", "Haunter", "Hypno", "Hypno", "Ibitak", "Ibitak", "Igamaro", "Igamaro", "Igelavar", "Igelavar", "Ignitius", "Ignitius", "Ilima", "Ilima", "Impoleon", "Impoleon", "Incineroar", "Incineroar", "Infernape", "Infernape", "Jaladero", "Jaladero", "Jalaedo", "Jalaedo", "Jallad", "Jallad", "Jangala", "Jangala", "Javelin", "Javelin", "Jigglypuff", "Jigglypuff", "Jigglyuff", "Jigglyuff", "Kabutops", "Kabutops", "Kadabra", "Kadabra", "Kaninchen", "Kaninchen", "Kanninen", "Kanninen", "Karpador", "Karpador", "Kartana", "Kartana", "Katapuldra", "Katapuldra", "Kauboss", "Kauboss", "Kavalera", "Kavalera", "Kavalero", "Kavalero", "Kecleon", "Kecleon", "Kelpsey", "Kelpsey", "Kentan", "Kentan", "Kesselkuchen", "Kesselkuchen", "Kicklee", "Kicklee", "Kicknin", "Kicknin", "Kiedörnchen", "Kiedörnchen", "Kiesulet", "Kiesulet", "Kinotak", "Kinotak", "Kirlia", "Kirlia", "Kisaidi", "Kisaidi"];
+    const pokemonList = ["Pikachu", "Schiggy", "Bisasam", "Glumanda", "Evoli", "Relaxo", "Mewtu", "Gengar", "Lucario", "Karpador", "Arktos", "Zapdos", "Lavados", "Pummeluff", "Taubsi", "Tauboga", "Tauboss", "Rattikarl", "Bisaknosp", "Blubella", "Bubelle", "Ditto", "Dragoran", "Flemmli", "Floette", "Flotsam", "Fukano", "Fummeluff", "Glurak", "Glutexo", "Golbat", "Goldini", "Golking", "Gowou", "Graveler", "Grimer", "Groink", "Guardevoir", "Habitak", "Haunter", "Hypno", "Ibitak", "Igamaro", "Igelavar", "Ignitius", "Impoleon", "Jallad", "Jangala", "Jigglypuff", "Kabutops", "Kadabra", "Kaninchen", "Kanninen", "Kartana", "Kauboss", "Kavalera", "Kavalero", "Kecleon", "Kelpsey", "Kentan", "Kicklee", "Kicknin", "Kirlia", "Kisaidi", "Klap", "Kleiner", "Kleopor", "Klopper", "Knofensa", "Koalara", "Kokowei", "Koknodon", "Kommandant", "Koneko", "Kopanda", "Kopassus", "Krabby", "Krebscorps", "Krokil", "Krokolok", "Krokokil", "Kronn", "Kryppluk", "Kubuin", "Kuehlur", "Kumquat", "Kunijharo", "Kunisada", "Kuno", "Kunomori", "Kunoro", "Kunous", "Kuraiko", "Kuraikon", "Kurakos", "Kurakon", "Kuraosa", "Kurasao", "Kurasena", "Kurase", "Kuraseon", "Kurasion", "Kurasoi", "Kurasora", "Kurasori", "Kurasou", "Kurasowa"];
     let activeDeck = [], currentIndex = 0, score = 0, streak = 0, roundsCompleted = 0, isListening = false;
 
     const wordDisplay = document.getElementById('wordDisplay');
