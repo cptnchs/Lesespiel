@@ -36,6 +36,9 @@
       font-size: 2.2rem; font-weight: 900; color: #2b6cb0; margin: 15px 0; 
       text-transform: uppercase; letter-spacing: 3px; word-break: break-word; 
     }
+
+    .underline { width: 60%; border-top: 3px solid #cbd5e0; margin: 6px 0; }
+    .correct-spelling { font-size: 1.1rem; color: #2d3748; margin-top: 6px; font-weight: 700; text-transform: none; }
     
     .heard-preview { font-size: 1.1rem; color: #4a5568; min-height: 28px; margin-top: 10px; font-weight: 600; }
     
@@ -61,6 +64,8 @@
   <div class="main-card">
     <div style="color: #a0aec0; font-weight: bold; font-size: 0.9rem;" id="streakText">SERIE: 0</div>
     <div class="target-word" id="wordDisplay">PIKACHU</div>
+    <div class="underline" aria-hidden="true"></div>
+    <div class="correct-spelling" id="correctSpelling">Pikachu</div>
     <div class="heard-preview" id="heardDisplay">Tippe auf SPRECHEN</div>
   </div>
 
@@ -97,6 +102,7 @@
     let activeDeck = [], currentIndex = 0, score = 0, streak = 0, roundsCompleted = 0, isListening = false;
 
     const wordDisplay = document.getElementById('wordDisplay');
+    const correctSpelling = document.getElementById('correctSpelling');
     const heardDisplay = document.getElementById('heardDisplay');
     const scoreDisplay = document.getElementById('score');
     const trophiesDisplay = document.getElementById('trophies');
@@ -106,6 +112,14 @@
     const exitBtn = document.getElementById('exitBtn');
 
     let recognition = null;
+
+    function capitalize(name) {
+      if (!name) return '';
+      // Keep any non-letter prefix (e.g., Nidoran♀) intact but capitalize the first letter of the visible name
+      // For simplicity, just lowercase then uppercase first character
+      const lowered = name.toLowerCase();
+      return lowered.charAt(0).toUpperCase() + lowered.slice(1);
+    }
 
     // Spracherkennung sicher kapseln
     function initSpeech() {
@@ -127,7 +141,7 @@
           actionBtn.textContent = "🎙️ HÖRE ZU...";
           actionBtn.classList.add('listening');
           heardDisplay.style.color = "#4a5568";
-          heardDisplay.textContent = "Spritzt / Sprich jetzt...";
+          heardDisplay.textContent = "Sprich jetzt...";
         };
 
         recognition.onresult = (event) => {
@@ -188,7 +202,9 @@
         currentIndex = 0;
         roundsCompleted++;
       }
-      wordDisplay.textContent = activeDeck[currentIndex];
+      const raw = activeDeck[currentIndex];
+      wordDisplay.textContent = raw.toUpperCase();
+      correctSpelling.textContent = capitalize(raw);
       wordDisplay.classList.remove('correct-flash');
       heardDisplay.textContent = "Tippe auf SPRECHEN";
       updateUI();
