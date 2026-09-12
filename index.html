@@ -67,7 +67,33 @@
   <button class="big-mic-btn" id="actionBtn">🎙️ SPRECHEN</button>
 
   <script>
-    const pokemonList = ["Pikachu", "Schiggy", "Bisasam", "Glumanda", "Evoli", "Relaxo", "Mewtu", "Gengar", "Lucario", "Karpador", "Arktos", "Zapdos", "Lavados", "Pummeluff", "Taubsi", "Tauboga", "Tauboss", "Rattikarl", "Bisaknosp", "Blubella", "Bubelle", "Ditto", "Dragoran", "Flemmli", "Floette", "Flotsam", "Fukano", "Fummeluff", "Glurak", "Glutexo", "Golbat", "Goldini", "Golking", "Gowou", "Graveler", "Grimer", "Groink", "Guardevoir", "Habitak", "Haunter", "Hypno", "Ibitak", "Igamaro", "Igelavar", "Ignitius", "Impoleon", "Jallad", "Jangala", "Jigglypuff", "Kabutops", "Kadabra", "Kaninchen", "Kanninen", "Kartana", "Kauboss", "Kavalera", "Kavalero", "Kecleon", "Kelpsey", "Kentan", "Kicklee", "Kicknin", "Kirlia", "Kisaidi", "Klap", "Kleiner", "Kleopor", "Klopper", "Knofensa", "Koalara", "Kokowei", "Koknodon", "Kommandant", "Koneko", "Kopanda", "Kopassus", "Krabby", "Krebscorps", "Krokil", "Krokolok", "Krokokil", "Kronn", "Kryppluk", "Kubuin", "Kuehlur", "Kumquat", "Kunijharo", "Kunisada", "Kuno", "Kunomori", "Kunoro", "Kunous", "Kuraiko", "Kuraikon", "Kurakos", "Kurakon", "Kuraosa", "Kurasao", "Kurasena", "Kurase", "Kuraseon", "Kurasion", "Kurasoi", "Kurasora", "Kurasori", "Kurasou", "Kurasowa"];
+    const pokemonList = [
+  "Bisasam", "Bisaknosp", "Bisaflor", "Glumanda", "Glutexo", "Glurak",
+  "Schiggy", "Schillok", "Turtok", "Raupy", "Safcon", "Smettbo",
+  "Hornliu", "Kokuna", "Bibor", "Taubsi", "Tauboga", "Tauboss",
+  "Rattfratz", "Rattikarl", "Habitak", "Ibitak", "Rettan", "Arbok",
+  "Pikachu", "Raichu", "Sandan", "Sandamer", "Nidoran♀", "Nidorina",
+  "Nidoqueen", "Nidoran♂", "Nidorino", "Nidoking", "Piepi", "Pixi",
+  "Vulpix", "Vulnona", "Pummeluff", "Knuddeluff", "Zubat", "Golbat",
+  "Myrapla", "Duflor", "Giflor", "Paras", "Parasek", "Bluzuk",
+  "Omot", "Digda", "Digdri", "Mauzi", "Snobilikat", "Enton",
+  "Entoron", "Menki", "Rasaff", "Fukano", "Arkani", "Quapsel",
+  "Quaputzi", "Quappo", "Abra", "Kadabra", "Simsala", "Machollo",
+  "Maschock", "Machomei", "Knofensa", "Ultrigaria", "Sarzenia", "Tentacha",
+  "Tentoxa", "Kleinstein", "Georok", "Geowaz", "Ponita", "Gallopa",
+  "Flegmon", "Lahmus", "Magnetilo", "Magneton", "Porenta", "Dodu",
+  "Dodri", "Jurob", "Jugong", "Sleima", "Sleimok", "Muschas",
+  "Austos", "Nebulak", "Alpollo", "Gengar", "Onix", "Traumato",
+  "Hypno", "Krabby", "Kingler", "Voltobal", "Lektrobal", "Owei",
+  "Kokowei", "Tragosso", "Knogga", "Kicklee", "Nockchan", "Schlurp",
+  "Smogon", "Smogmog", "Rihorn", "Rizeros", "Chaneira", "Tangela",
+  "Kangama", "Seeper", "Seemon", "Goldini", "Golking", "Sterndu",
+  "Starmie", "Pantimos", "Sichlor", "Rossana", "Elektek", "Magmar",
+  "Pinsir", "Tauros", "Karpador", "Garados", "Lapras", "Ditto",
+  "Evoli", "Aquana", "Blitza", "Flamara", "Porygon", "Amonitas",
+  "Amoroso", "Kabuto", "Kabutops", "Aerodactyl", "Relaxo", "Arktos",
+  "Zapdos", "Lavados", "Dratini", "Dragonir", "Dragoran", "Mewtu"
+];
     let activeDeck = [], currentIndex = 0, score = 0, streak = 0, roundsCompleted = 0, isListening = false;
 
     const wordDisplay = document.getElementById('wordDisplay');
