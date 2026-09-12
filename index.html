@@ -1,12 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Pokémon Lesespiel</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    html, body { width: 100%; height: 100%; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; background: #f0f4f8; }
+    body { display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 15px; }
+    
+    .exit-btn { 
+      position: absolute; top: 15px; right: 15px; background: #e53e3e; color: white; 
+      border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.5rem; 
+      font-weight: bold; cursor: pointer; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    
+    .stats-container { 
+      width: 100%; max-width: 450px; display: flex; justify-content: space-between; 
+      align-items: center; background: white; padding: 12px 20px; border-radius: 15px; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-top: 10px; 
+    }
+    
+    .score-board { font-size: 1.1rem; font-weight: bold; color: #2d3748; }
+    .multiplier-badge { font-size: 1rem; font-weight: 800; color: #dd6b20; background: #feebc8; padding: 4px 12px; border-radius: 20px; }
+    .multiplier-badge.active { color: #c53030; background: #fed7d7; transform: scale(1.05); }
+    
+    .main-card { 
+      background: white; width: 100%; max-width: 450px; padding: 30px 20px; 
+      border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; 
+      display: flex; flex-direction: column; align-items: center; justify-content: center; 
+      flex-grow: 1; margin: 15px 0; 
+    }
+    
+    .target-word { 
+      font-size: 3.5rem; font-weight: 900; color: #2b6cb0; margin: 15px 0; 
+      text-transform: uppercase; letter-spacing: 5px; word-break: break-word; 
+    }
+    
+    .heard-preview { font-size: 1.1rem; color: #4a5568; min-height: 28px; margin-top: 10px; font-weight: 600; }
+    
+    .big-mic-btn { 
+      width: 100%; max-width: 450px; height: 90px; background: #3182ce; color: white; 
+      border: none; border-radius: 25px; font-size: 1.6rem; font-weight: bold; 
+      cursor: pointer; margin-bottom: 10px; box-shadow: 0 6px 16px rgba(49, 130, 206, 0.4);
+      transition: background-color 0.2s;
+    }
+    .big-mic-btn.listening { background: #e53e3e; box-shadow: 0 6px 16px rgba(229, 62, 62, 0.4); }
+    .correct-flash { color: #2f855a !important; }
+  </style>
+</head>
+<body>
+
+  <button class="exit-btn" id="exitBtn">✕</button>
+
+  <div class="stats-container">
+    <div class="score-board">Punkte: <span id="score">0</span> <span id="trophies"></span></div>
+    <div class="multiplier-badge" id="multiBadge">1x Multi</div>
+  </div>
+
+  <div class="main-card">
+    <div style="color: #a0aec0; font-weight: bold; font-size: 0.9rem;" id="streakText">SERIE: 0</div>
+    <div class="target-word" id="wordDisplay">PIKACHU</div>
+    <div class="heard-preview" id="heardDisplay">Tippe auf SPRECHEN</div>
+  </div>
+
+  <button class="big-mic-btn" id="actionBtn">🎙️ SPRECHEN</button>
+
   <script>
     const pokemonList = ["Pikachu", "Schiggy", "Bisasam", "Glumanda", "Evoli", "Relaxo", "Mewtu", "Gengar", "Lucario", "Karpador", "Arktos", "Zapdos", "Lavados", "Pummeluff", "Taubsi"];
-    
-    let activeDeck = [];
-    let currentIndex = 0;
-    let score = 0;
-    let streak = 0;
-    let roundsCompleted = 0;
-    let isListening = false;
+    let activeDeck = [], currentIndex = 0, score = 0, streak = 0, roundsCompleted = 0, isListening = false;
 
     const wordDisplay = document.getElementById('wordDisplay');
     const heardDisplay = document.getElementById('heardDisplay');
@@ -17,62 +79,64 @@
     const actionBtn = document.getElementById('actionBtn');
     const exitBtn = document.getElementById('exitBtn');
 
-    // Web Speech API Prüfung
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognition = null;
 
-    if (!SpeechRecognition) {
-      heardDisplay.textContent = "Fehler: Web Speech API wird nicht unterstützt!";
-      heardDisplay.style.color = "red";
-    } else {
-      recognition = new SpeechRecognition();
-      recognition.lang = 'de-DE';
-      recognition.continuous = false;
-      recognition.interimResults = true; // Auf true gesetzt, damit Zwischenergebnisse direkt sichtbar sind
+    // Spracherkennung sicher kapseln
+    function initSpeech() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        heardDisplay.textContent = "Spracherkennung nicht unterstützt (Bitte Chrome nutzen)";
+        heardDisplay.style.color = "red";
+        return;
+      }
 
-      recognition.onstart = () => {
-        isListening = true;
-        actionBtn.textContent = "🎙️ HÖRE ZU...";
-        actionBtn.classList.add('listening');
-        heardDisplay.style.color = "#718096";
-        heardDisplay.textContent = "Spritzt / Sprich jetzt...";
-      };
+      try {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'de-DE';
+        recognition.continuous = false;
+        recognition.interimResults = true;
 
-      recognition.onresult = (event) => {
-        let transcript = "";
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
-        }
-        
-        const cleanText = transcript.trim().toLowerCase().replace(/[.,?!]/g, '');
-        heardDisplay.textContent = `Gehört: "${cleanText}"`;
+        recognition.onstart = () => {
+          isListening = true;
+          actionBtn.textContent = "🎙️ HÖRE ZU...";
+          actionBtn.classList.add('listening');
+          heardDisplay.style.color = "#4a5568";
+          heardDisplay.textContent = "Spritzt / Sprich jetzt...";
+        };
 
-        if (event.results[0].isFinal) {
-          checkWord(cleanText);
-        }
-      };
+        recognition.onresult = (event) => {
+          let transcript = "";
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+          }
+          const cleanText = transcript.trim().toLowerCase().replace(/[.,?!]/g, '');
+          heardDisplay.textContent = `Gehört: "${cleanText}"`;
+          
+          if (event.results[0].isFinal) {
+            checkWord(cleanText);
+          }
+        };
 
-      recognition.onerror = (event) => {
-        console.error("Sprachfehler:", event.error);
-        isListening = false;
-        actionBtn.textContent = "🎙️ SPRECHEN";
-        actionBtn.classList.remove('listening');
-        
-        if (event.error === 'not-allowed') {
-          heardDisplay.textContent = "Fehler: Mikrofon-Zugriff verweigert!";
-          heardDisplay.style.color = "red";
-        } else if (event.error === 'no-speech') {
-          heardDisplay.textContent = "Nichts gehört. Noch einmal versuchen.";
-        } else {
-          heardDisplay.textContent = `Fehler: ${event.error}`;
-        }
-      };
+        recognition.onerror = (e) => {
+          stopListening();
+          if (e.error === 'not-allowed') {
+            heardDisplay.textContent = "Mikrofon-Zugriff im Browser blockiert!";
+            heardDisplay.style.color = "red";
+          } else if (e.error !== 'no-speech') {
+            heardDisplay.textContent = "Fehler: " + e.error;
+          }
+        };
 
-      recognition.onend = () => {
-        isListening = false;
-        actionBtn.textContent = "🎙️ SPRECHEN";
-        actionBtn.classList.remove('listening');
-      };
+        recognition.onend = stopListening;
+      } catch (err) {
+        heardDisplay.textContent = "Fehler beim Starten der Sprach-API";
+      }
+    }
+
+    function stopListening() {
+      isListening = false;
+      actionBtn.textContent = "🎙️ SPRECHEN";
+      actionBtn.classList.remove('listening');
     }
 
     function shuffle(array) {
@@ -84,21 +148,12 @@
       return arr;
     }
 
-    function getMultiplier() {
-      if (streak >= 5) return 3;
-      if (streak >= 3) return 2;
-      return 1;
-    }
-
     function updateUI() {
-      const multi = getMultiplier();
+      const multi = streak >= 5 ? 3 : (streak >= 3 ? 2 : 1);
       multiBadge.textContent = `${multi}x Multi`;
       multiBadge.className = multi > 1 ? 'multiplier-badge active' : 'multiplier-badge';
       streakText.textContent = `SERIE: ${streak} IN FOLGE 🔥`;
-      
-      let trophyIcons = '';
-      for(let i = 0; i < roundsCompleted; i++) trophyIcons += '🏆';
-      trophiesDisplay.textContent = trophyIcons;
+      trophiesDisplay.textContent = '🏆'.repeat(roundsCompleted);
     }
 
     function nextWord() {
@@ -107,59 +162,51 @@
         currentIndex = 0;
         roundsCompleted++;
       }
-      
       wordDisplay.textContent = activeDeck[currentIndex];
       wordDisplay.classList.remove('correct-flash');
-      heardDisplay.textContent = "";
+      heardDisplay.textContent = "Tippe auf SPRECHEN";
       updateUI();
     }
 
     function checkWord(spokenText) {
       const target = activeDeck[currentIndex].toLowerCase();
-
       if (spokenText === target || spokenText.includes(target) || target.includes(spokenText)) {
         streak++;
-        score += (1 * getMultiplier());
+        score += (1 * (streak >= 5 ? 3 : (streak >= 3 ? 2 : 1)));
         scoreDisplay.textContent = score;
-        
         wordDisplay.classList.add('correct-flash');
-        
-        setTimeout(() => {
-          currentIndex++;
-          nextWord();
+        setTimeout(() => { 
+          currentIndex++; 
+          nextWord(); 
         }, 700);
       }
     }
 
-    // Direktes Ausführen des Mikrofon-Starts ohne Konflikt mit Fullscreen
     actionBtn.addEventListener('click', () => {
-      if (!recognition) return;
-
-      // Vollbild im Hintergrund anfordern
+      // Echter Kiosk/Vollbildmodus auf Android
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(() => {});
       }
 
-      if (isListening) {
-        try {
-          recognition.stop();
-        } catch(e) {}
-      } else {
-        try {
-          recognition.start();
-        } catch (e) {
-          console.error("Start-Fehler:", e);
+      if (recognition) {
+        if (isListening) {
+          try { recognition.stop(); } catch(e) {}
+        } else {
+          try { recognition.start(); } catch(e) {}
         }
       }
     });
 
-    exitBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
+    exitBtn.addEventListener('click', () => {
       if (document.fullscreenElement) {
         document.exitFullscreen();
       }
     });
 
+    // Start-Up
+    initSpeech();
     activeDeck = shuffle(pokemonList);
     nextWord();
   </script>
+</body>
+</html>
